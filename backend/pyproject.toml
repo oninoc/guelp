@@ -1,0 +1,21 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.16.2",
+    "cryptography>=45.0.5",
+    "fastapi>=0.115.14",
+    "jose>=1.0.0",
+    "psycopg2>=2.9.10",
+    "psycopg[async,binary]>=3.2.9",
+    "pydantic-settings>=2.10.1",
+    "python-jose[cryptography]>=3.5.0",
+    "sqlmodel>=0.0.24",
+    "starlette>=0.46.2",
+    "tzdata>=2025.2",
+    "uvicorn>=0.34.3",
+    "passlib[bcrypt]==1.7.4"
+]

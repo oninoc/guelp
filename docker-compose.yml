@@ -1,0 +1,78 @@
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: server
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/app
+    command: ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    env_file:
+      - .env
+
+  migrations:
+    build:
+      context: ./backend  
+      dockerfile: Dockerfile
+      target: migrations
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}
+    command: ["upgrade", "head"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  create-migrations:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: migrations
+    volumes:
+      - ./backend/src/alembic/versions:/app/src/alembic/versions
+    command: ["revision", "--autogenerate", "-m", "init"]
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - migrations
+
+  db:
+    image: postgres:16
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    command: -p ${POSTGRES_PORT}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -p ${POSTGRES_PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 8080:80
+    user: root
+    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
+    volumes:
+      - ./pgadmin/pgpass:/pgpass
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    depends_on:
+      db:
+        condition: service_healthy
