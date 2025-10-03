@@ -6,7 +6,9 @@ from ....services.schemas.auth.CreateAccessTokenRequest import CreateAccessToken
 
 class LoginHandler(BaseAuthHandler[LoginRequest, LoginResponse]):
     async def execute(self, request: LoginRequest) -> LoginResponse:
-        user = await self.user_unit_of_work.user_repository.get_by_email(request.email)
+        user = await self.unit_of_work.user_repository.get_by_email(request.email)
+        if user is None:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
         if not self.auth_service.verify_password(request.password, user.password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         token_response = self.auth_service.create_access_token(
@@ -20,7 +22,7 @@ class LoginHandler(BaseAuthHandler[LoginRequest, LoginResponse]):
         # Persist tokens on login
         user.token = token_response.access_token
         user.refresh_token = token_response.refresh_token
-        await self.user_unit_of_work.user_repository.update(user)
+        await self.unit_of_work.user_repository.update(user)
 
         return LoginResponse(
             access_token=token_response.access_token,

@@ -1,15 +1,14 @@
 from ...shared.base_auth_handler import BaseAuthHandler
 from .get_user_by_id_request import GetUserByIdRequest
 from .get_user_by_id_response import GetUserByIdResponse, RoleWithPermissions
-from ....persistence.repositories.user_repository import UserRepository
 from fastapi import HTTPException
+from uuid import UUID
 
 
 class GetUserByIdHandler(BaseAuthHandler[GetUserByIdRequest, GetUserByIdResponse]):
     async def execute(self, request: GetUserByIdRequest) -> GetUserByIdResponse:
-        repo = UserRepository(self.session)
-        user = await repo.get_with_roles_permissions_by_id(request.id)
-        if not user:
+        user = await self.unit_of_work.user_repository.get_with_roles_permissions_by_id(UUID(request.id))
+        if user is None:
             raise HTTPException(status_code=404, detail="User not found")
 
         roles_output: list[RoleWithPermissions] = []

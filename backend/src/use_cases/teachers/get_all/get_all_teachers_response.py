@@ -1,15 +1,15 @@
-from ...shared.base_data_transfer import BaseDataTransfer
 from typing import List
+
+from ...shared.base_data_transfer import BaseDataTransfer
 
 
 class TeacherSummary(BaseDataTransfer):
     id: str
-    code: str
     names: str
     father_last_name: str
     mother_last_name: str
-    principal_subject: str
-    secondary_subject: str
+    document_type: str
+    document_number: str
 
 
 class GetAllTeachersResponse(BaseDataTransfer):

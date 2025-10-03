@@ -1,9 +1,10 @@
+from typing import Optional
+
 from ...shared.base_data_transfer import BaseDataTransfer
 
 
 class GetTeacherByIdResponse(BaseDataTransfer):
     id: str
-    code: str
     names: str
     father_last_name: str
     mother_last_name: str
@@ -12,8 +13,4 @@ class GetTeacherByIdResponse(BaseDataTransfer):
     birth_date: str
     gender: str
     nationality: str
-    principal_subject: str
-    secondary_subject: str
-    start_time: str
-    end_time: str
     user_id: str

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from ...shared.base_data_transfer import BaseDataTransfer
 
 
@@ -8,6 +10,5 @@ class CreateStudentResponse(BaseDataTransfer):
     father_last_name: str
     mother_last_name: str
     full_name: str
-    degree: str
-    level: str
-    full_level: str
+    email: Optional[str] = None
+    phone: Optional[str] = None

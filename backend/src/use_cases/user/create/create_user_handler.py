@@ -9,7 +9,7 @@ from uuid import uuid4
 class CreateUserHandler(BaseAuthHandler[CreateUserRequest, CreateUserResponse]):
     async def execute(self, request: CreateUserRequest) -> CreateUserResponse:
         # Authorization must be enforced in route dependency; double-check here for safety if desired
-        existing = await self.user_unit_of_work.user_repository.get_by_email(request.email)
+        existing = await self.unit_of_work.user_repository.get_by_email(request.email)
         if existing:
             raise HTTPException(status_code=400, detail="Email already registered")
 
@@ -24,7 +24,7 @@ class CreateUserHandler(BaseAuthHandler[CreateUserRequest, CreateUserResponse]):
             token=uuid4().hex,
             refresh_token=uuid4().hex,
         )
-        created = await self.user_unit_of_work.user_repository.create(user)
+        created = await self.unit_of_work.user_repository.create(user)
         return CreateUserResponse(id=str(created.id), email=created.email)
 
 

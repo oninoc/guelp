@@ -1,23 +1,19 @@
 from ...shared.base_auth_handler import BaseAuthHandler
 from .get_all_teachers_request import GetAllTeachersRequest
 from .get_all_teachers_response import GetAllTeachersResponse, TeacherSummary
-from ....persistence.repositories.teacher_repository import TeacherRepository
-
 
 class GetAllTeachersHandler(BaseAuthHandler[GetAllTeachersRequest, GetAllTeachersResponse]):
     async def execute(self, request: GetAllTeachersRequest) -> GetAllTeachersResponse:
-        repo = TeacherRepository(self.session)
-        teachers = await repo.get_all()
+        teachers = await self.unit_of_work.teacher_repository.get_all()
         
         teacher_summaries = [
             TeacherSummary(
                 id=str(teacher.id),
-                code=teacher.code,
                 names=teacher.names,
                 father_last_name=teacher.father_last_name,
                 mother_last_name=teacher.mother_last_name,
-                principal_subject=teacher.principal_subject,
-                secondary_subject=teacher.secondary_subject,
+                document_type=teacher.document_type,
+                document_number=teacher.document_number,
             )
             for teacher in teachers
         ]
