@@ -15,6 +15,7 @@ class ClassroomSubjectStudent(BaseIntModel, table=True):
     qualification: Optional[str] = None
     status: Optional[str] = None
     description: Optional[str] = None
+    is_active: bool = Field(default=True)
 
     classroom_subject: "ClassroomSubject" = Relationship(back_populates="students")
     student: "Student" = Relationship(back_populates="classroom_subject_students")

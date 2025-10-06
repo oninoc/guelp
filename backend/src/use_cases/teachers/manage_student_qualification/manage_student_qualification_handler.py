@@ -51,6 +51,9 @@ class ManageStudentQualificationHandler(
         if request.description is not None:
             enrollment.description = request.description
             updated = True
+        if request.is_active is not None:
+            enrollment.is_active = request.is_active
+            updated = True
 
         if updated:
             await self.unit_of_work.classroom_subject_student_repository.update(
@@ -103,6 +106,7 @@ class ManageStudentQualificationHandler(
             qualification=enrollment.qualification,
             status=enrollment.status,
             description=enrollment.description,
+            is_active=enrollment.is_active,
             records=records,
         )
 

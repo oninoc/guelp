@@ -18,6 +18,7 @@ class ClassroomSubject(BaseIntModel, table=True):
     substitute_teacher_id: Optional[UUID] = Field(
         default=None, foreign_key="teacher.id"
     )
+    is_active: bool = Field(default=True)
 
     classroom: "Classroom" = Relationship(back_populates="classroom_subjects")
     subject: "Subject" = Relationship(back_populates="classroom_subjects")

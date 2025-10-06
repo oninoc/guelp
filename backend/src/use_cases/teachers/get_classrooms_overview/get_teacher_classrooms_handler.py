@@ -19,7 +19,10 @@ class GetTeacherClassroomsHandler(
         self, request: GetTeacherClassroomsRequest
     ) -> GetTeacherClassroomsResponse:
         classroom_subjects = await self.unit_of_work.classroom_subject_repository.get_for_teacher(
-            request.teacher_id, include_substitute=True, with_relations=True
+            request.teacher_id,
+            include_substitute=True,
+            with_relations=True,
+            only_active=not request.include_inactive,
         )
         tutor_classrooms = {
             classroom.id
@@ -41,6 +44,7 @@ class GetTeacherClassroomsHandler(
                     subject_id=subject.id,
                     subject_name=subject.name,
                     is_substitute=relation.substitute_teacher_id == request.teacher_id,
+                    is_active=relation.is_active,
                 )
             )
 

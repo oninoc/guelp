@@ -8,6 +8,7 @@ class TeacherClassroomSubject(BaseDataTransfer):
     subject_id: int
     subject_name: str
     is_substitute: bool
+    is_active: bool
 
 
 class TeacherClassroomSummary(BaseDataTransfer):

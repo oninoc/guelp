@@ -18,9 +18,11 @@ class GetStudentSubjectQualificationsHandler(
     async def execute(
         self, request: GetStudentSubjectQualificationsRequest
     ) -> GetStudentSubjectQualificationsResponse:
-        enrollments = (
-            await self.unit_of_work.classroom_subject_student_repository.get_for_student(
-                request.student_id, with_relations=True
+        enrollments = await (
+            self.unit_of_work.classroom_subject_student_repository.get_for_student(
+                request.student_id,
+                with_relations=True,
+                only_active=not request.include_inactive,
             )
         )
 
@@ -54,6 +56,7 @@ class GetStudentSubjectQualificationsHandler(
                     current_qualification=enrollment.qualification,
                     status=enrollment.status,
                     description=enrollment.description,
+                    is_active=enrollment.is_active,
                     records=records,
                 )
             )

@@ -71,11 +71,14 @@ async def get_teacher_classrooms(
     teacher_id: str,
     handler: GetTeacherClassroomsHandler = Depends(GetTeacherClassroomsHandler),
     current: CurrentUserContext = Depends(get_current_user),
+    include_inactive: bool = False,
 ):
     if current.user_id != teacher_id and "view_teachers" not in current.permissions:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    request = GetTeacherClassroomsRequest(teacher_id=teacher_id)
+    request = GetTeacherClassroomsRequest(
+        teacher_id=teacher_id, include_inactive=include_inactive
+    )
     result = await handler.execute(request)
     return {
         **result.model_dump(),

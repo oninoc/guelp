@@ -12,9 +12,11 @@ class GetStudentSubjectsHandler(
     async def execute(
         self, request: GetStudentSubjectsRequest
     ) -> GetStudentSubjectsResponse:
-        enrollments = (
-            await self.unit_of_work.classroom_subject_student_repository.get_for_student(
-                request.student_id, with_relations=True
+        enrollments = await (
+            self.unit_of_work.classroom_subject_student_repository.get_for_student(
+                request.student_id,
+                with_relations=True,
+                only_active=not request.include_inactive,
             )
         )
 
@@ -41,6 +43,8 @@ class GetStudentSubjectsHandler(
                     classroom_id=str(classroom.id) if classroom else None,
                     classroom_level=classroom.level if classroom else None,
                     classroom_degree=classroom.degree if classroom else None,
+                    status=enrollment.status,
+                    is_active=enrollment.is_active,
                 )
             )
 

@@ -15,5 +15,6 @@ class ManageStudentQualificationResponse(BaseDataTransfer):
     qualification: Optional[str] = None
     status: Optional[str] = None
     description: Optional[str] = None
+    is_active: bool
     records: List[QualificationRecordSummary]
 

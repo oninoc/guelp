@@ -5,4 +5,5 @@ from ...shared.base_data_transfer import BaseDataTransfer
 
 class GetStudentSubjectsRequest(BaseDataTransfer):
     student_id: UUID
+    include_inactive: bool = False
 

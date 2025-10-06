@@ -55,11 +55,14 @@ async def get_student_subjects(
     student_id: str,
     handler: GetStudentSubjectsHandler = Depends(GetStudentSubjectsHandler),
     current: CurrentUserContext = Depends(get_current_user),
+    include_inactive: bool = False,
 ):
     if current.user_id != student_id and "view_students" not in current.permissions:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    request = GetStudentSubjectsRequest(student_id=student_id)
+    request = GetStudentSubjectsRequest(
+        student_id=student_id, include_inactive=include_inactive
+    )
     result = await handler.execute(request)
     return {
         **result.model_dump(),
@@ -78,11 +81,14 @@ async def get_student_subject_qualifications(
         GetStudentSubjectQualificationsHandler
     ),
     current: CurrentUserContext = Depends(get_current_user),
+    include_inactive: bool = False,
 ):
     if current.user_id != student_id and "view_students" not in current.permissions:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    request = GetStudentSubjectQualificationsRequest(student_id=student_id)
+    request = GetStudentSubjectQualificationsRequest(
+        student_id=student_id, include_inactive=include_inactive
+    )
     result = await handler.execute(request)
     return {
         **result.model_dump(),

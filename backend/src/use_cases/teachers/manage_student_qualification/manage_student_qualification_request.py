@@ -10,6 +10,7 @@ class ManageStudentQualificationRequest(BaseDataTransfer):
     qualification: Optional[str] = None
     status: Optional[str] = None
     description: Optional[str] = None
+    is_active: Optional[bool] = None
     qualification_record_id: Optional[int] = None
     qualification_record_description: Optional[str] = None
 

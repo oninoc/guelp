@@ -18,6 +18,7 @@ class StudentSubjectQualification(BaseDataTransfer):
     current_qualification: Optional[str] = None
     status: Optional[str] = None
     description: Optional[str] = None
+    is_active: bool
     records: List[QualificationRecord]
 
 

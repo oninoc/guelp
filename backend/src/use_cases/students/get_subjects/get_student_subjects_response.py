@@ -14,6 +14,8 @@ class StudentSubjectSummary(BaseDataTransfer):
     classroom_id: Optional[str] = None
     classroom_level: Optional[str] = None
     classroom_degree: Optional[str] = None
+    status: Optional[str] = None
+    is_active: bool
 
 
 class GetStudentSubjectsResponse(BaseDataTransfer):

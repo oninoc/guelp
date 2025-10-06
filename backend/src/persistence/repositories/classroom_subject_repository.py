@@ -24,18 +24,27 @@ class ClassroomSubjectRepository(BaseRepository[ClassroomSubject]):
         ]
 
     async def get_for_classroom(
-        self, classroom_id: UUID, with_relations: bool = False
+        self,
+        classroom_id: UUID,
+        with_relations: bool = False,
+        only_active: bool = True,
     ) -> List[ClassroomSubject]:
         query = select(self._entity_class).where(
             self._entity_class.classroom_id == classroom_id
         )
+        if only_active:
+            query = query.where(self._entity_class.is_active.is_(True))
         if with_relations:
             query = query.options(*self._default_options())
         result = await self._session.execute(query)
         return list(result.scalars().all())
 
     async def get_for_teacher(
-        self, teacher_id: UUID, include_substitute: bool = True, with_relations: bool = False
+        self,
+        teacher_id: UUID,
+        include_substitute: bool = True,
+        with_relations: bool = False,
+        only_active: bool = True,
     ) -> List[ClassroomSubject]:
         condition = self._entity_class.teacher_id == teacher_id
         if include_substitute:
@@ -43,18 +52,26 @@ class ClassroomSubjectRepository(BaseRepository[ClassroomSubject]):
                 self._entity_class.substitute_teacher_id == teacher_id
             )
         query = select(self._entity_class).where(condition)
+        if only_active:
+            query = query.where(self._entity_class.is_active.is_(True))
         if with_relations:
             query = query.options(*self._default_options())
         result = await self._session.execute(query)
         return list(result.scalars().all())
 
     async def get_by_classroom_and_subject(
-        self, classroom_id: UUID, subject_id: int, with_relations: bool = False
+        self,
+        classroom_id: UUID,
+        subject_id: int,
+        with_relations: bool = False,
+        only_active: bool = True,
     ) -> ClassroomSubject | None:
         query = select(self._entity_class).where(
             (self._entity_class.classroom_id == classroom_id)
             & (self._entity_class.subject_id == subject_id)
         )
+        if only_active:
+            query = query.where(self._entity_class.is_active.is_(True))
         if with_relations:
             query = query.options(*self._default_options())
         result = await self._session.execute(query)
