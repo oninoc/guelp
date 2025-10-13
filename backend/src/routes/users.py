@@ -9,7 +9,7 @@ from src.use_cases.user.get_by_id.get_user_by_id_request import GetUserByIdReque
 router = APIRouter()
 
 
-@router.post("/users")
+@router.post("/")
 async def create_user(
     request: CreateUserRequest,
     handler: CreateUserHandler = Depends(CreateUserHandler),
@@ -22,7 +22,7 @@ async def create_user(
     created = await handler.execute(request)
     return {**created.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}
 
-@router.get("/user/{id}")
+@router.get("/{id}")
 async def get_user_by_id(
     id: str,
     handler: GetUserByIdHandler = Depends(GetUserByIdHandler),

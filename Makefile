@@ -17,3 +17,6 @@ migrate:
 create-migrations:
 	@docker compose up -d --wait db
 	@docker compose run --rm create-migrations
+
+add-migration:
+	@docker compose exec backend bash -c "uv run alembic revision --autogenerate -m '${name}'"

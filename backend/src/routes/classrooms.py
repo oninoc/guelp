@@ -7,7 +7,7 @@ from src.use_cases.classrooms.create.create_classroom_request import CreateClass
 router = APIRouter()
 
 
-@router.post("/classrooms")
+@router.post("/")
 async def create_classroom(
     request: CreateClassroomRequest,
     handler: CreateClassroomHandler = Depends(CreateClassroomHandler),

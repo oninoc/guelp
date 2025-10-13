@@ -25,7 +25,7 @@ from src.use_cases.students.get_subject_qualifications.get_student_subject_quali
 router = APIRouter()
 
 
-@router.post("/students")
+@router.post("/")
 async def create_student(
     request: CreateStudentRequest,
     handler: CreateStudentHandler = Depends(CreateStudentHandler),
@@ -39,7 +39,7 @@ async def create_student(
     return {**result.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}
 
 
-@router.get("/student/{id}")
+@router.get("/{id}")
 async def get_student_by_id(
     id: str,
     handler: GetStudentByIdHandler = Depends(GetStudentByIdHandler),
@@ -50,7 +50,7 @@ async def get_student_by_id(
     return {**result.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}
 
 
-@router.get("/students/{student_id}/subjects")
+@router.get("/{student_id}/subjects")
 async def get_student_subjects(
     student_id: str,
     handler: GetStudentSubjectsHandler = Depends(GetStudentSubjectsHandler),
@@ -74,7 +74,7 @@ async def get_student_subjects(
     }
 
 
-@router.get("/students/{student_id}/subjects/qualifications")
+@router.get("/{student_id}/subjects/qualifications")
 async def get_student_subject_qualifications(
     student_id: str,
     handler: GetStudentSubjectQualificationsHandler = Depends(

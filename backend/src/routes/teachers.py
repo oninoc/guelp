@@ -31,7 +31,7 @@ from src.use_cases.teachers.manage_student_qualification.manage_student_qualific
 router = APIRouter()
 
 
-@router.post("/teachers")
+@router.post("/")
 async def create_teacher(
     request: CreateTeacherRequest,
     handler: CreateTeacherHandler = Depends(CreateTeacherHandler),
@@ -45,7 +45,7 @@ async def create_teacher(
     return {**result.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}
 
 
-@router.get("/teacher/{id}")
+@router.get("/{id}")
 async def get_teacher_by_id(
     id: str,
     handler: GetTeacherByIdHandler = Depends(GetTeacherByIdHandler),
@@ -56,7 +56,7 @@ async def get_teacher_by_id(
     return {**result.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}
 
 
-@router.get("/teachers")
+@router.get("/")
 async def get_all_teachers(
     handler: GetAllTeachersHandler = Depends(GetAllTeachersHandler),
     current: CurrentUserContext = Depends(get_current_user),
@@ -66,7 +66,7 @@ async def get_all_teachers(
     return {**result.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}
 
 
-@router.get("/teachers/{teacher_id}/classrooms")
+@router.get("/{teacher_id}/classrooms")
 async def get_teacher_classrooms(
     teacher_id: str,
     handler: GetTeacherClassroomsHandler = Depends(GetTeacherClassroomsHandler),
@@ -90,7 +90,7 @@ async def get_teacher_classrooms(
     }
 
 
-@router.post("/teachers/{teacher_id}/qualifications")
+@router.post("/{teacher_id}/qualifications")
 async def manage_student_qualification(
     teacher_id: str,
     payload: ManageStudentQualificationRequest,

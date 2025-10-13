@@ -21,12 +21,12 @@ services:
       context: ./backend  
       dockerfile: Dockerfile
       target: migrations
-    environment:
-      - POSTGRES_URL=${POSTGRES_URL}
     command: ["upgrade", "head"]
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
 
   create-migrations:
     build:

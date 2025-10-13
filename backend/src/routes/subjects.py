@@ -7,7 +7,7 @@ from src.use_cases.subjects.create.create_subject_request import CreateSubjectRe
 router = APIRouter()
 
 
-@router.post("/subjects")
+@router.post("/")
 async def create_subject(
     request: CreateSubjectRequest,
     handler: CreateSubjectHandler = Depends(CreateSubjectHandler),

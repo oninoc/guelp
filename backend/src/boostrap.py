@@ -18,10 +18,20 @@ app: FastAPI = FastAPI()
 if configuration_variables.is_production:
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
 
+frontend_origins = {
+    "http://localhost:8081",  # Expo web default
+    "http://localhost:19006",  # Expo web alternative
+    "http://localhost:19000",  # Expo dev server
+}
+
+additional_origins = getattr(configuration_variables, "allowed_origins", None)
+if additional_origins:
+    frontend_origins.update(additional_origins)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=list(frontend_origins),
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -31,11 +41,11 @@ app.add_middleware(
 async def health_check() -> Dict[str, str]:
     return {"status": "healthy"}
 
-app.include_router(auth_router)
-app.include_router(users_router)
-app.include_router(roles_router)
-app.include_router(roles_permissions_router)
-app.include_router(teachers_router)
-app.include_router(students_router)
-app.include_router(classrooms_router)
-app.include_router(subjects_router)
+app.include_router(auth_router, prefix="/auth")
+app.include_router(users_router, prefix="/users")
+app.include_router(roles_router, prefix="/roles")
+app.include_router(roles_permissions_router, prefix="/permissions")
+app.include_router(teachers_router, prefix="/teachers")
+app.include_router(students_router, prefix="/students")
+app.include_router(classrooms_router, prefix="/classrooms")
+app.include_router(subjects_router, prefix="/subjects")

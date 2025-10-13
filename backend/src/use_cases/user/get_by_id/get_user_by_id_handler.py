@@ -7,7 +7,8 @@ from uuid import UUID
 
 class GetUserByIdHandler(BaseAuthHandler[GetUserByIdRequest, GetUserByIdResponse]):
     async def execute(self, request: GetUserByIdRequest) -> GetUserByIdResponse:
-        user = await self.unit_of_work.user_repository.get_with_roles_permissions_by_id(UUID(request.id))
+        user_id = request.id if isinstance(request.id, UUID) else UUID(str(request.id))
+        user = await self.unit_of_work.user_repository.get_with_roles_permissions_by_id(user_id)
         if user is None:
             raise HTTPException(status_code=404, detail="User not found")
 
