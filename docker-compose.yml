@@ -7,7 +7,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      target: server
+      target: dev
     ports:
       - 8000:8000
     volumes:
@@ -15,34 +15,6 @@ services:
     command: ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     env_file:
       - .env
-
-  migrations:
-    build:
-      context: ./backend  
-      dockerfile: Dockerfile
-      target: migrations
-    command: ["upgrade", "head"]
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file:
-      - .env
-
-  create-migrations:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: migrations
-    volumes:
-      - ./backend/src/alembic/versions:/app/src/alembic/versions
-    command: ["revision", "--autogenerate", "-m", "init"]
-    environment:
-      - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      db:
-        condition: service_healthy
-    profiles:
-      - migrations
 
   db:
     image: postgres:16
