@@ -40,7 +40,7 @@ resource "aws_security_group" "postgres" {
 
 # Aurora Subnet for Aurora RDS
 resource "aws_subnet" "postgres" {
-  count                   = 2
+  count                   = 3
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.${count.index + 1}.0/24"
   availability_zone       = data.aws_availability_zones.available.names[count.index]
@@ -68,33 +68,29 @@ resource "random_password" "db_password" {
   upper   = true
   lower   = true
   numeric = true
+  override_special = "!#$%^&*()-_=+[]{}<>?"
 }
 
 # Aurora RDS Cluster
-resource "aws_rds_cluster" "postgres" {
-  cluster_identifier              = "${var.project_name}-postgres-cluster"
-  engine                          = "postgres"
-  engine_version                  = var.rds_engine_version
-  master_username                 = var.rds_username
-  master_password                 = random_password.db_password.result
-  database_name                   = var.rds_database_name
-  db_subnet_group_name            = aws_db_subnet_group.postgres.name
-  vpc_security_group_ids          = [aws_security_group.postgres.id]
-  skip_final_snapshot             = true
+# PostgreSQL RDS Instance
+resource "aws_db_instance" "postgres" {
+  identifier                 = "${var.project_name}-postgres"
+  engine                     = "postgres"
+  engine_version             = var.rds_engine_version
+  instance_class             = var.rds_instance_class
+  allocated_storage          = 20
+  db_name                    = var.rds_database_name
+  username                   = var.rds_username
+  password                   = random_password.db_password.result
+  db_subnet_group_name       = aws_db_subnet_group.postgres.name
+  vpc_security_group_ids     = [aws_security_group.postgres.id]
+  multi_az                   = false
+  publicly_accessible        = false
+  storage_encrypted          = true
+  skip_final_snapshot        = true
+  auto_minor_version_upgrade = true
 
   tags = {
-    Name = "${var.project_name}-postgres-cluster"
-  }
-}
-
-# Aurora RDS Instance
-resource "aws_rds_cluster_instance" "postgres" {
-    identifier         = "${var.project_name}-postgres-instance"
-  cluster_identifier = aws_rds_cluster.postgres.id
-  instance_class     = var.rds_instance_class
-  engine             = aws_rds_cluster.postgres.engine
-
-  tags = {
-    Name = "${var.project_name}-postgres-instance"
+    Name = "${var.project_name}-postgres"
   }
 }

@@ -14,9 +14,9 @@ resource "aws_secretsmanager_secret" "db_connection" {
 resource "aws_secretsmanager_secret_version" "db_connection" {
   secret_id = aws_secretsmanager_secret.db_connection.id
   secret_string = jsonencode({
-    connection_string = "postgresql://${var.rds_username}:${random_password.db_password.result}@${aws_rds_cluster.postgres.endpoint}:5432/${var.rds_database_name}"
-    host              = aws_rds_cluster.postgres.endpoint
-    port              = aws_rds_cluster.postgres.port
+    connection_string = "postgresql://${var.rds_username}:${random_password.db_password.result}@${aws_db_instance.postgres.address}:${aws_db_instance.postgres.port}/${var.rds_database_name}"
+    host              = aws_db_instance.postgres.address
+    port              = aws_db_instance.postgres.port
     database          = var.rds_database_name
     username          = var.rds_username
     password          = random_password.db_password.result

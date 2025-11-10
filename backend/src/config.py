@@ -13,8 +13,8 @@ class ConfigurationVariables(BaseSettings):
     log_sql_queries: Annotated[bool, Field(alias="LOG_SQL_QUERIES", default=False)]
     secret_key: Annotated[str, Field(alias="SECRET_KEY", default="")]
     algorithm: Annotated[str, Field(alias="ALGORITHM", default="HS256")]
-    aws_access_key_id: Annotated[str, Field(alias="AWS_ACCESS_KEY_ID")]
-    aws_secret_access_key: Annotated[str, Field(alias="AWS_SECRET_ACCESS_KEY")]
+    aws_access_key_id: Annotated[str, Field(alias="AWS_ACCESS_KEY_ID", default="")]
+    aws_secret_access_key: Annotated[str, Field(alias="AWS_SECRET_ACCESS_KEY", default="")]
     aws_region: Annotated[str, Field(alias="AWS_REGION", default="us-east-1")]
     aws_file_bucket_name: Annotated[str, Field(alias="AWS_FILE_BUCKET_NAME")]
 

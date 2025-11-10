@@ -30,7 +30,7 @@ output "postgres_subnet_ids" {
 
 output "rds_endpoint" {
   description = "The endpoint of the RDS cluster"
-  value       = aws_rds_cluster.postgres.endpoint
+  value       = aws_db_instance.postgres.address
 }
 
 output "s3_bucket_name" {

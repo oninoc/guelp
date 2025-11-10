@@ -39,6 +39,7 @@ resource "aws_apprunner_service" "app_runner" {
         runtime_environment_variables = {
           "ENVIRONMENT"                 = "prod"
           "AWS_REGION"                  = var.aws_region
+          "AWS_FILE_BUCKET_NAME"        = aws_s3_bucket.bucket.id
         }
         runtime_environment_secrets = {
           "POSTGRES_URL" = "${aws_secretsmanager_secret.db_connection.arn}:connection_string::"
@@ -62,7 +63,7 @@ resource "aws_apprunner_service" "app_runner" {
 
   health_check_configuration {
     protocol            = "HTTP"
-    path                = "/"
+    path                = "/health"
     interval            = 5
     timeout             = 2
     healthy_threshold   = 1
@@ -76,8 +77,7 @@ resource "aws_apprunner_service" "app_runner" {
   }
 
   depends_on = [
-    aws_rds_cluster.postgres,
-    aws_rds_cluster_instance.postgres
+    aws_db_instance.postgres
   ]
 
   tags = {

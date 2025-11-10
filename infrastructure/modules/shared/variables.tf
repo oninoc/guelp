@@ -47,3 +47,13 @@ variable "base_ecs_migration_task_memory" {
   description = "Base ECS migration task memory"
   type        = number
 }
+
+variable "seed_user_email" {
+  description = "Seed user email"
+  type        = string
+}
+
+variable "seed_user_password" {
+  description = "Seed user password"
+  type        = string
+}

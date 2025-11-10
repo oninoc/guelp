@@ -24,14 +24,10 @@ frontend_origins = {
     "http://localhost:19000",  # Expo dev server
 }
 
-additional_origins = getattr(configuration_variables, "allowed_origins", None)
-if additional_origins:
-    frontend_origins.update(additional_origins)
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=list(frontend_origins),
-    allow_credentials=False,
+    allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

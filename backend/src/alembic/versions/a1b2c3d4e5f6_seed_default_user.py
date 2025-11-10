@@ -42,8 +42,8 @@ def upgrade() -> None:
     """
     connection = op.get_bind()
 
-    seed_email = os.getenv("SEED_USER_EMAIL", "admin@gmail.com").strip()
-    seed_password = os.getenv("SEED_USER_PASSWORD", "password")
+    seed_email = os.getenv("SEED_USER_EMAIL", "admin@guelp.com").strip()
+    seed_password = os.getenv("SEED_USER_PASSWORD", "49n£38y4>X6V")
     seed_name = os.getenv("SEED_USER_NAME", "Admin").strip()
     seed_last_name = os.getenv("SEED_USER_LAST_NAME", "User").strip()
     seed_phone = os.getenv("SEED_USER_PHONE", "0000000000").strip()

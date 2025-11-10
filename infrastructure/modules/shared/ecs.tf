@@ -63,6 +63,17 @@ resource "aws_ecs_task_definition" "migration" {
         }
       ]
 
+      environment = [
+        {
+          name  = "SEED_USER_EMAIL"
+          value = var.seed_user_email
+        },
+        {
+          name  = "SEED_USER_PASSWORD"
+          value = var.seed_user_password
+        }
+      ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
