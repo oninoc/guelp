@@ -19,6 +19,10 @@ jobs:
     env:
       SERVER_ECR_REGISTRY: ${{ vars.SERVER_ECR_REGISTRY }}
       MIGRATIONS_ECR_REGISTRY: ${{ vars.MIGRATIONS_ECR_REGISTRY }}
+      ECS_CLUSTER_NAME: ${{ vars.ECS_CLUSTER_NAME }}
+      MIGRATION_TASK_DEFINITION: ${{ vars.MIGRATION_TASK_DEFINITION }}
+      SECURITY_GROUP_IDS: ${{ vars.SECURITY_GROUP_IDS }}
+      SUBNET_IDS: ${{ vars.SUBNET_IDS }}
     steps:
     - uses: actions/checkout@v4
 
@@ -55,3 +59,11 @@ jobs:
         tags: ${{ env.MIGRATIONS_ECR_REGISTRY }}:latest
         cache-from: type=gha,key=base-migrations
         cache-to: type=gha,mode=max,key=base-migrations
+      
+    - name: Deploy Migration Task
+      run: |
+        aws ecs run-task \
+          --cluster $ECS_CLUSTER_NAME \
+          --task-definition $MIGRATION_TASK_DEFINITION \
+          --launch-type FARGATE \
+          --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_IDS],securityGroups=[$SECURITY_GROUP_IDS],assignPublicIp=ENABLED}"

@@ -16,7 +16,7 @@ class ConfigurationVariables(BaseSettings):
     aws_access_key_id: Annotated[str, Field(alias="AWS_ACCESS_KEY_ID", default="")]
     aws_secret_access_key: Annotated[str, Field(alias="AWS_SECRET_ACCESS_KEY", default="")]
     aws_region: Annotated[str, Field(alias="AWS_REGION", default="us-east-1")]
-    aws_file_bucket_name: Annotated[str, Field(alias="AWS_FILE_BUCKET_NAME")]
+    aws_file_bucket_name: Annotated[str, Field(alias="AWS_FILE_BUCKET_NAME", default="")]
 
     @property
     def is_production(self) -> bool:
