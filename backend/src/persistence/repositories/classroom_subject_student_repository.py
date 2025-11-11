@@ -2,11 +2,13 @@ from typing import List
 from uuid import UUID
 
 from sqlalchemy.orm import selectinload
-from sqlmodel import select
+from sqlmodel import select, update
 
 from ...models.classroom_subject import ClassroomSubject
 from ...models.classroom_subject_student import ClassroomSubjectStudent
 from ...models.qualifications import Qualification
+from ...models.students import Student
+from ...models.user import User
 from .base_repository import BaseRepository
 
 
@@ -16,12 +18,15 @@ class ClassroomSubjectStudentRepository(
     _entity_class = ClassroomSubjectStudent
 
     def _with_relations(self):
-        return selectinload(self._entity_class.classroom_subject).options(
-            selectinload(ClassroomSubject.subject),
-            selectinload(ClassroomSubject.teacher),
-            selectinload(ClassroomSubject.substitute_teacher),
-            selectinload(ClassroomSubject.classroom),
-            selectinload(ClassroomSubject.classes),
+        return (
+            selectinload(self._entity_class.classroom_subject).options(
+                selectinload(ClassroomSubject.subject),
+                selectinload(ClassroomSubject.teacher),
+                selectinload(ClassroomSubject.substitute_teacher),
+                selectinload(ClassroomSubject.classroom),
+                selectinload(ClassroomSubject.classes),
+            ),
+            selectinload(self._entity_class.student).selectinload(Student.user),
         )
 
     async def get_for_student(
@@ -36,12 +41,13 @@ class ClassroomSubjectStudentRepository(
         if only_active:
             query = query.where(self._entity_class.is_active.is_(True))
         if with_relations:
-            query = query.options(
-                self._with_relations(),
+            loader_options = list(self._with_relations())
+            loader_options.append(
                 selectinload(self._entity_class.qualifications).options(
                     selectinload(Qualification.teacher)
-                ),
+                )
             )
+            query = query.options(*loader_options)
         result = await self._session.execute(query)
         return list(result.scalars().all())
 
@@ -57,12 +63,13 @@ class ClassroomSubjectStudentRepository(
         if only_active:
             query = query.where(self._entity_class.is_active.is_(True))
         if with_relations:
-            query = query.options(
-                self._with_relations(),
+            loader_options = list(self._with_relations())
+            loader_options.append(
                 selectinload(self._entity_class.qualifications).options(
                     selectinload(Qualification.teacher)
-                ),
+                )
             )
+            query = query.options(*loader_options)
         result = await self._session.execute(query)
         return list(result.scalars().all())
 
@@ -80,26 +87,39 @@ class ClassroomSubjectStudentRepository(
         if only_active:
             query = query.where(self._entity_class.is_active.is_(True))
         if with_relations:
-            query = query.options(
-                self._with_relations(),
+            loader_options = list(self._with_relations())
+            loader_options.append(
                 selectinload(self._entity_class.qualifications).options(
                     selectinload(Qualification.teacher)
-                ),
+                )
             )
+            query = query.options(*loader_options)
         result = await self._session.execute(query)
         return result.scalars().first()
 
     async def get_by_id_with_relations(
         self, enrollment_id: int
     ) -> ClassroomSubjectStudent | None:
-        query = select(self._entity_class).where(
-            self._entity_class.id == enrollment_id
-        ).options(
-            self._with_relations(),
-            selectinload(self._entity_class.qualifications).options(
-                selectinload(Qualification.teacher)
-            ),
+        query = (
+            select(self._entity_class)
+            .where(self._entity_class.id == enrollment_id)
+            .options(
+                *self._with_relations(),
+                selectinload(self._entity_class.qualifications).options(
+                    selectinload(Qualification.teacher)
+                ),
+            )
         )
         result = await self._session.execute(query)
         return result.scalars().first()
+
+    async def update_final_grade(
+        self, enrollment_id: int, qualification: str | None
+    ) -> None:
+        await self._session.execute(
+            update(self._entity_class)
+            .where(self._entity_class.id == enrollment_id)
+            .values(qualification=qualification)
+        )
+        await self._session.commit()
 

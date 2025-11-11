@@ -1,4 +1,6 @@
-from ...shared.base_auth_handler import BaseAuthHandler
+from datetime import datetime
+
+from ...shared.base_handler import BaseHandler
 from .get_student_subject_qualifications_request import (
     GetStudentSubjectQualificationsRequest,
 )
@@ -10,7 +12,7 @@ from .get_student_subject_qualifications_response import (
 
 
 class GetStudentSubjectQualificationsHandler(
-    BaseAuthHandler[
+    BaseHandler[
         GetStudentSubjectQualificationsRequest,
         GetStudentSubjectQualificationsResponse,
     ]
@@ -37,6 +39,7 @@ class GetStudentSubjectQualificationsHandler(
                 records.append(
                     QualificationRecord(
                         id=record.id,
+                        grade=record.grade,
                         teacher_id=str(teacher.id) if teacher else None,
                         teacher_full_name=(
                             f"{teacher.names} {teacher.father_last_name} {teacher.mother_last_name}".strip()
@@ -44,6 +47,9 @@ class GetStudentSubjectQualificationsHandler(
                             else None
                         ),
                         description=record.description,
+                        created_at=record.created_at.isoformat()
+                        if isinstance(record.created_at, datetime)
+                        else None,
                     )
                 )
 

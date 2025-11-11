@@ -8,6 +8,10 @@ from ...models.classroom_subject import ClassroomSubject
 from ...models.subjects import Subject
 from ...models.classrooms import Classroom
 from ...models.teachers import Teacher
+from ...models.classroom_subject_student import ClassroomSubjectStudent
+from ...models.qualifications import Qualification
+from ...models.students import Student
+from ...models.user import User
 from .base_repository import BaseRepository
 
 
@@ -18,9 +22,15 @@ class ClassroomSubjectRepository(BaseRepository[ClassroomSubject]):
         return [
             selectinload(self._entity_class.subject),
             selectinload(self._entity_class.classroom),
-            selectinload(self._entity_class.teacher),
+            selectinload(self._entity_class.teacher).selectinload(Teacher.user),
             selectinload(self._entity_class.substitute_teacher),
-            selectinload(self._entity_class.students),
+            selectinload(self._entity_class.students).options(
+                selectinload(ClassroomSubjectStudent.student)
+                .selectinload(Student.user),
+                selectinload(ClassroomSubjectStudent.qualifications).options(
+                    selectinload(Qualification.teacher)
+                ),
+            ),
         ]
 
     async def get_for_classroom(

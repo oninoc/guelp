@@ -1,8 +1,8 @@
-from ...shared.base_auth_handler import BaseAuthHandler
+from ...shared.base_handler import BaseHandler
 from .get_all_teachers_request import GetAllTeachersRequest
 from .get_all_teachers_response import GetAllTeachersResponse, TeacherSummary
 
-class GetAllTeachersHandler(BaseAuthHandler[GetAllTeachersRequest, GetAllTeachersResponse]):
+class GetAllTeachersHandler(BaseHandler[GetAllTeachersRequest, GetAllTeachersResponse]):
     async def execute(self, request: GetAllTeachersRequest) -> GetAllTeachersResponse:
         teachers = await self.unit_of_work.teacher_repository.get_all()
         

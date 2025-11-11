@@ -11,11 +11,11 @@ FROM base AS base_with_code
 COPY ./src ./src
 
 FROM base AS dev
-CMD ["uv", "run", "uvicorn", "src.main:app", "--reload", "--host", "0.0.0.0", "--port" , "8000"]
+CMD ["uv", "run", "uvicorn", "src.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
 
 FROM base_with_code AS prod
 EXPOSE 80
-CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port" , "80"]
+CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "80"]
 
 FROM base_with_code AS migration
 COPY ./alembic.ini /code/alembic.ini

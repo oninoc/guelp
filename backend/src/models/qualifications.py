@@ -17,6 +17,7 @@ class Qualification(BaseIntModel, table=True):
         default=None, foreign_key="teacher.id"
     )
     description: Optional[str] = None
+    grade: Optional[str] = Field(default=None, max_length=4)
 
     classroom_subject_student: Optional["ClassroomSubjectStudent"] = Relationship(
         back_populates="qualifications"

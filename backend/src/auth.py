@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 from fastapi import Depends, HTTPException, Request
 from jose import jwt, JWTError
 from src.services.auth import AuthService
@@ -13,6 +13,8 @@ class CurrentUserContext:
     email: str
     roles: List[str]
     permissions: List[str]
+    teacher_id: Optional[str] = None
+    student_id: Optional[str] = None
 
 
 async def get_current_user(
@@ -55,11 +57,28 @@ async def get_current_user(
             if rp.permission is not None:
                 permission_codes.append(rp.permission.code)
 
+    teacher_id = str(user.teacher.id) if getattr(user, "teacher", None) else None
+    student_id = str(user.student.id) if getattr(user, "student", None) else None
+
     return CurrentUserContext(
         user_id=str(user.id),
         email=user.email,
         roles=sorted(set(role_codes)),
         permissions=sorted(set(permission_codes)),
+        teacher_id=teacher_id,
+        student_id=student_id,
     )
+
+
+async def get_optional_current_user(
+    request: Request,
+    session: AsyncSQLSession,
+    auth: AuthService = Depends(AuthService),
+) -> Optional[CurrentUserContext]:
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.lower().startswith("bearer "):
+        return None
+
+    return await get_current_user(request, session, auth)
 
 

@@ -2,6 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from src.auth import get_current_user, CurrentUserContext
 from src.use_cases.students.create.create_student_handler import CreateStudentHandler
 from src.use_cases.students.create.create_student_request import CreateStudentRequest
+from src.use_cases.students.get_all.get_all_students_handler import (
+    GetAllStudentsHandler,
+)
+from src.use_cases.students.get_all.get_all_students_request import (
+    GetAllStudentsRequest,
+)
 from src.use_cases.students.get_by_id.get_student_by_id_handler import (
     GetStudentByIdHandler,
 )
@@ -39,6 +45,23 @@ async def create_student(
     return {**result.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}
 
 
+@router.get("/")
+async def get_all_students(
+    handler: GetAllStudentsHandler = Depends(GetAllStudentsHandler),
+    current: CurrentUserContext = Depends(get_current_user),
+):
+    request = GetAllStudentsRequest()
+    result = await handler.execute(request)
+    return {
+        **result.model_dump(),
+        "requested_by": {
+            "email": current.email,
+            "roles": current.roles,
+            "permissions": current.permissions,
+        },
+    }
+
+
 @router.get("/{id}")
 async def get_student_by_id(
     id: str,
@@ -57,7 +80,7 @@ async def get_student_subjects(
     current: CurrentUserContext = Depends(get_current_user),
     include_inactive: bool = False,
 ):
-    if current.user_id != student_id and "view_students" not in current.permissions:
+    if current.student_id != student_id and "view_students" not in current.permissions:
         raise HTTPException(status_code=403, detail="Forbidden")
 
     request = GetStudentSubjectsRequest(
@@ -80,21 +103,10 @@ async def get_student_subject_qualifications(
     handler: GetStudentSubjectQualificationsHandler = Depends(
         GetStudentSubjectQualificationsHandler
     ),
-    current: CurrentUserContext = Depends(get_current_user),
     include_inactive: bool = False,
 ):
-    if current.user_id != student_id and "view_students" not in current.permissions:
-        raise HTTPException(status_code=403, detail="Forbidden")
-
     request = GetStudentSubjectQualificationsRequest(
         student_id=student_id, include_inactive=include_inactive
     )
     result = await handler.execute(request)
-    return {
-        **result.model_dump(),
-        "requested_by": {
-            "email": current.email,
-            "roles": current.roles,
-            "permissions": current.permissions,
-        },
-    }
+    return {**result.model_dump()}

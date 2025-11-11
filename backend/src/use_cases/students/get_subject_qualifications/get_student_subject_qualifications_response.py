@@ -5,9 +5,11 @@ from ...shared.base_data_transfer import BaseDataTransfer
 
 class QualificationRecord(BaseDataTransfer):
     id: Optional[int] = None
+    grade: Optional[str] = None
     teacher_id: Optional[str] = None
     teacher_full_name: Optional[str] = None
     description: Optional[str] = None
+    created_at: Optional[str] = None
 
 
 class StudentSubjectQualification(BaseDataTransfer):

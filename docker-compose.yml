@@ -48,3 +48,15 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  migration:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: migration
+    command: ["uv", "run", "alembic", "downgrade", "base"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}

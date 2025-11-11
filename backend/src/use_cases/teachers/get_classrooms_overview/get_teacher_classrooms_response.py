@@ -9,6 +9,8 @@ class TeacherClassroomSubject(BaseDataTransfer):
     subject_name: str
     is_substitute: bool
     is_active: bool
+    teacher_id: Optional[str] = None
+    teacher_name: Optional[str] = None
 
 
 class TeacherClassroomSummary(BaseDataTransfer):

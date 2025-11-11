@@ -20,6 +20,9 @@ class GetUserByIdHandler(BaseAuthHandler[GetUserByIdRequest, GetUserByIdResponse
             perm_codes = [rp.permission.code for rp in getattr(role, "permissions", []) if rp.permission is not None]
             roles_output.append(RoleWithPermissions(code=role.code, permissions=sorted(set(perm_codes))))
 
+        teacher_id = getattr(getattr(user, "teacher", None), "id", None)
+        student_id = getattr(getattr(user, "student", None), "id", None)
+
         return GetUserByIdResponse(
             id=str(user.id),
             email=user.email,
@@ -28,6 +31,8 @@ class GetUserByIdHandler(BaseAuthHandler[GetUserByIdRequest, GetUserByIdResponse
             phone=user.phone,
             address=user.address,
             roles=roles_output,
+            teacher_id=str(teacher_id) if teacher_id else None,
+            student_id=str(student_id) if student_id else None,
         )
 
 

@@ -24,7 +24,9 @@ class UserRepository(BaseRepository[User]):
                 joinedload(self._entity_class.roles)
                 .joinedload(UserRoleRelation.role)
                 .joinedload(Role.permissions)
-                .joinedload(RolePermissionRelation.permission)
+                .joinedload(RolePermissionRelation.permission),
+                joinedload(self._entity_class.teacher),
+                joinedload(self._entity_class.student),
             )
         )
         result = await self._session.execute(query)
