@@ -12,5 +12,4 @@ class CreateTeacherResponse(BaseDataTransfer):
     document_number: str
     birth_date: str
     gender: str
-    nationality: str
     user_id: str

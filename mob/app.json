@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.onijhosman.mob"
     },
     "web": {
       "output": "static",
@@ -44,6 +45,7 @@
       "apiBaseUrl": "https://zwftj3xpti.us-east-1.awsapprunner.com",
       "router": {},
       "eas": {
+        "projectId": "12e68f16-0258-4382-9a7b-da968cbad580"
       }
     },
     "experiments": {

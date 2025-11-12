@@ -10,7 +10,7 @@ const extra: ExtraConfig =
   {};
 
 export const API_BASE_URL =
-  extra.apiBaseUrl?.replace(/\/+$/, "") ?? "https://zwftj3xpti.us-east-1.awsapprunner.com/";
+  extra.apiBaseUrl?.replace(/\/+$/, "") ?? "https://zwftj3xpti.us-east-1.awsapprunner.com";
 
 export const API_TIMEOUT_MS = 15000;
 

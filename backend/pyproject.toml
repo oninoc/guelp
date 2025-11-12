@@ -18,5 +18,6 @@ dependencies = [
     "uvicorn>=0.38.0",
     "passlib[bcrypt]==1.7.4",
     "bcrypt>=3.2,<4.0",
-    "boto3>=1.38.45"
+    "boto3>=1.38.45",
+    "fpdf2>=2.7.0"
 ]

@@ -23,3 +23,23 @@ unlock:
 		exit 1; \
 	fi
 	terraform force-unlock -force $(LOCK_ID)
+
+# RDS Management
+plan-rds:
+	terraform plan -var-file=environments/prod/terraform.tfvars -target=module.shared.aws_db_instance.postgres
+
+destroy-rds:
+	@echo "⚠️  WARNING: This will destroy the RDS instance and all its data!"
+	@read -p "Are you sure? Type 'yes' to continue: " confirm && [ "$$confirm" = "yes" ] || exit 1
+	terraform destroy -var-file=environments/prod/terraform.tfvars -target=module.shared.aws_db_instance.postgres
+
+recreate-rds: destroy-rds
+	@echo "Recreating RDS instance..."
+	terraform apply -var-file=environments/prod/terraform.tfvars -target=module.shared.aws_db_instance.postgres
+
+reset-rds:
+	@echo "⚠️  WARNING: This will force recreation of the RDS instance (destroy + create)!"
+	@echo "⚠️  All data will be lost!"
+	@read -p "Are you sure? Type 'yes' to continue: " confirm && [ "$$confirm" = "yes" ] || exit 1
+	@echo "Forcing recreation of RDS instance..."
+	terraform apply -var-file=environments/prod/terraform.tfvars -target=module.shared.aws_db_instance.postgres -replace=module.shared.aws_db_instance.postgres

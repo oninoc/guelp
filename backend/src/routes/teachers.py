@@ -39,12 +39,16 @@ from src.use_cases.teachers.delete_qualification.delete_qualification_handler im
 from src.use_cases.teachers.delete_qualification.delete_qualification_request import (
     DeleteQualificationRequest,
 )
+from src.use_cases.teachers.update.update_teacher_handler import UpdateTeacherHandler
+from src.use_cases.teachers.update.update_teacher_request import UpdateTeacherRequest
+from src.use_cases.teachers.delete.delete_teacher_handler import DeleteTeacherHandler
+from src.use_cases.teachers.delete.delete_teacher_request import DeleteTeacherRequest
 
 
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("")
 async def create_teacher(
     request: CreateTeacherRequest,
     handler: CreateTeacherHandler = Depends(CreateTeacherHandler),
@@ -69,7 +73,7 @@ async def get_teacher_by_id(
     return {**result.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}
 
 
-@router.get("/")
+@router.get("")
 async def get_all_teachers(
     handler: GetAllTeachersHandler = Depends(GetAllTeachersHandler),
 ):
@@ -184,3 +188,32 @@ async def delete_qualification(
             "permissions": current.permissions,
         },
     }
+
+
+@router.put("/{teacher_id}")
+async def update_teacher(
+    teacher_id: str,
+    request: UpdateTeacherRequest,
+    handler: UpdateTeacherHandler = Depends(UpdateTeacherHandler),
+    current: CurrentUserContext = Depends(get_current_user),
+):
+    if "manage_users" not in current.permissions:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    
+    request.teacher_id = teacher_id
+    result = await handler.execute(request)
+    return {**result.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}
+
+
+@router.delete("/{teacher_id}")
+async def delete_teacher(
+    teacher_id: str,
+    handler: DeleteTeacherHandler = Depends(DeleteTeacherHandler),
+    current: CurrentUserContext = Depends(get_current_user),
+):
+    if "manage_users" not in current.permissions:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    
+    request = DeleteTeacherRequest(teacher_id=teacher_id)
+    result = await handler.execute(request)
+    return {**result.model_dump(), "requested_by": {"email": current.email, "roles": current.roles, "permissions": current.permissions}}

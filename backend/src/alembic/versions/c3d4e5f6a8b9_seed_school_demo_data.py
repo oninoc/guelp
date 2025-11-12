@@ -415,19 +415,19 @@ def upgrade() -> None:
     math_a_id = _ensure_classroom_subject(
         connection,
         classroom_id=classroom_a_id,
-        subject_id=subject_ids["Mathematics"],
+        subject_id=subject_ids["Matematica"],
         teacher_id=teacher_ids.get("maria.gomez@school.demo"),
     )
     science_a_id = _ensure_classroom_subject(
         connection,
         classroom_id=classroom_a_id,
-        subject_id=subject_ids["Science"],
+        subject_id=subject_ids["Ciencia"],
         teacher_id=teacher_ids.get("juan.perez@school.demo"),
     )
     history_b_id = _ensure_classroom_subject(
         connection,
         classroom_id=classroom_b_id,
-        subject_id=subject_ids["History"],
+        subject_id=subject_ids["Historia"],
         teacher_id=teacher_ids.get("juan.perez@school.demo"),
     )
 

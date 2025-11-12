@@ -7,7 +7,7 @@ from src.use_cases.roles.assign_role_request import AssignRoleRequest
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("")
 async def assign_role(
     request: AssignRoleRequest,
     handler: AssignRoleHandler = Depends(AssignRoleHandler),

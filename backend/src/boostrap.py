@@ -12,8 +12,10 @@ from src.routes.teachers import router as teachers_router
 from src.routes.students import router as students_router
 from src.routes.classrooms import router as classrooms_router
 from src.routes.subjects import router as subjects_router
+from src.routes.classroom_subject import router as classroom_subject_router
+from src.routes.classroom_subject_student import router as classroom_subject_student_router
 
-app: FastAPI = FastAPI()
+app: FastAPI = FastAPI(redirect_slashes=False)
 
 if configuration_variables.is_production:
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
@@ -45,3 +47,5 @@ app.include_router(teachers_router, prefix="/teachers")
 app.include_router(students_router, prefix="/students")
 app.include_router(classrooms_router, prefix="/classrooms")
 app.include_router(subjects_router, prefix="/subjects")
+app.include_router(classroom_subject_router, prefix="/classroom-subject")
+app.include_router(classroom_subject_student_router, prefix="/classroom-subject-student")

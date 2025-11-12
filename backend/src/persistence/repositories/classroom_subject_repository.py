@@ -49,6 +49,11 @@ class ClassroomSubjectRepository(BaseRepository[ClassroomSubject]):
         result = await self._session.execute(query)
         return list(result.scalars().all())
 
+    async def get_all_with_relations(self) -> List[ClassroomSubject]:
+        query = select(self._entity_class).options(*self._default_options())
+        result = await self._session.execute(query)
+        return list(result.scalars().all())
+
     async def get_for_teacher(
         self,
         teacher_id: UUID,

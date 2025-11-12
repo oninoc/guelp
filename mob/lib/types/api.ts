@@ -198,14 +198,15 @@ export interface CreateStudentPayload {
   email?: string | null;
   birth_date?: string | null;
   gender?: string | null;
-  nationality?: string | null;
   document_type?: string | null;
   document_number?: string | null;
   responsible_name?: string | null;
   responsible_phone?: string | null;
   responsible_email?: string | null;
   responsible_address?: string | null;
-  user_id: string;
+  user_email?: string | null;
+  user_password?: string | null;
+  user_id?: string | null;
 }
 
 export interface CreateTeacherPayload {
@@ -216,8 +217,9 @@ export interface CreateTeacherPayload {
   document_number: string;
   birth_date: string;
   gender: string;
-  nationality: string;
-  user_id: string;
+  user_email?: string | null;
+  user_password?: string | null;
+  user_id?: string | null;
 }
 
 export interface CreateSubjectPayload {

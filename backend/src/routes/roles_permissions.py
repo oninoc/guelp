@@ -7,7 +7,7 @@ from src.use_cases.roles_permissions.assign_permission_request import AssignPerm
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("")
 async def assign_permission(
     request: AssignPermissionRequest,
     handler: AssignPermissionHandler = Depends(AssignPermissionHandler),

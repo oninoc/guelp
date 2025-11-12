@@ -9,7 +9,7 @@ from src.use_cases.user.get_by_id.get_user_by_id_request import GetUserByIdReque
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("")
 async def create_user(
     request: CreateUserRequest,
     handler: CreateUserHandler = Depends(CreateUserHandler),
